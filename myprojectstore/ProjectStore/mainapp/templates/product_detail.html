@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load specifications %}
+{% block content %}
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'base' %}">Main</a></li>
+            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ product.image.url }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        <h3>{{ product.name }}</h3>
+        <p>Price: {{ product.price }} $ </p>
+        <p>Description: {{ product.description }}</p>
+    </div>
+    <p class="mt-4">Specification: </p>
+
+    {{ product | product_spec }}
+
+</div>
+
+{% endblock content %}
