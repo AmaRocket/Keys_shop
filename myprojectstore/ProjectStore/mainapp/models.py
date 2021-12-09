@@ -100,20 +100,13 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    # For right downloading images
-    # def save(self, *args, **kwargs):
-    #     image = self.image
-    #     img = Image.open(image)
-    #     min_height, min_width = self.MIN_RESOLUTION
-    #     max_height, max_width = self.MAX_RESOLUTION
-    #     if img.height < min_height or img.width < min_width:
-    #         raise MinResolutionErrorExceptions('Resolution of image is too low!')
-    #     if img.height > max_height or img.width > max_width:
-    #         raise MaxResolutionErrorExceptions('Resolution of image is too large!')
-    #     super().save(*args, **kwargs)
+    def get_model_name(self):
+        return self.__class__.__name__.lower()
 
 
-# ---------------------------CATEGORIES---------------------------------------------------------------------------------
+
+
+# ---------------------------PRODUCT-CATEGORIES---------------------------------------------------------------------------------
 
 class BackUpStorage(Product):
     description = models.TextField(verbose_name='Desciption Of Product BackUp/Storage',
@@ -130,6 +123,8 @@ class BackUpStorage(Product):
         return get_product_url(self, 'product_detail')
 
 
+
+
 class Design(Product):
     description = models.TextField(verbose_name='Desciption Of Product ',
                                    null=True)  # description of product
@@ -141,6 +136,7 @@ class Design(Product):
 
     def get_absolute_url(self):
         return get_product_url(self, 'product_detail')
+
 
 
 # -----------------------END_OF_CATEGORIES------------------------------------------------------------------------------
@@ -160,13 +156,20 @@ class CartProduct(models.Model):
     def __str__(self):
         return "Product {} (For Busket)".format(self.content_object.name)
 
+    def save(self, *args, **kwargs):
+        self.final_price = self.qty * self.content_object.price
+        super().save(*args, **kwargs)
+
+    def get_model_name(self):
+        return self.__class__._meta.model_name
+
 
 class Cart(models.Model):
-    owner = models.ForeignKey('Customer', verbose_name='Owner', on_delete=models.CASCADE)  # owner of basket
+    owner = models.ForeignKey('Customer', null=True, verbose_name='Owner', on_delete=models.CASCADE)  # owner of basket
     products = models.ManyToManyField(CartProduct, blank=True,
                                       related_name='related_cart')  # relation mtm with products
     total_product = models.PositiveIntegerField(default=0)  # numbers of products in basket
-    final_price = models.DecimalField(max_digits=9, decimal_places=2,
+    final_price = models.DecimalField(max_digits=9, default=0, decimal_places=2,
                                       verbose_name='Total Price')  # total $ in basket
     in_order = models.BooleanField(default=False)  # when customer make order basket will registered for it
     for_anonymous_user = models.BooleanField(default=False)  # pass key for non-registered users
@@ -174,13 +177,26 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def save(self, *args, **kwargs):  # calculate balance of products in basket
+        cart_data = self.products.aggregate(models.Sum('final_price'), models.Count('id'))
+        print(cart_data)
+
+        if cart_data.get('final_price__sum'):
+            self.final_price = cart_data['final_price__sum']
+        else:
+            self.final_price = 0
+            self.total_products = cart_data['id__count']
+
+        print(cart_data)
+        super().save(*args, **kwargs)
+
 
 # --------------------------END_OF_BASKET_SETTINGS----------------------------------------------------------------------
 
 class Customer(models.Model):
-    user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE)  # relations customer-user
-    phone = models.CharField(max_length=13, verbose_name='Phone Number')  # phone number
-    address = models.CharField(max_length=255, verbose_name='Address')  # address
+    user = models.OneToOneField(User, verbose_name='User', on_delete=models.CASCADE)  # relations customer-user
+    phone = models.CharField(max_length=13, verbose_name='Phone Number', null=True, blank=True)  # phone number
+    address = models.CharField(max_length=255, verbose_name='Address', null=True, blank=True)  # address
 
     def __str__(self):
         return "Customer: {} {}".format(self.user.first_name, self.user.last_name)
