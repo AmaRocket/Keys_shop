@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load specifications %}
 {% block content %}
-<nav aria-label="breadcrumb" class="mt-4">
+<nav aria-label="breadcrumb" class="mt-3">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'base' %}">Main</a></li>
         <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
@@ -14,17 +14,21 @@
         <img src="{{ product.image.url }}" class="img-fluid">
     </div>
     <div class="col-md-8">
-        <h3>{{ product.name }}</h3>
-        <p>Price: {{ product.price }} $ </p>
+        <h3>{{ product.title }}</h3>
+        <hr>
+        <p>Price: {{ product.price }} $</p>
+        <hr>
         <p>Description: {{ product.description }}</p>
+        <hr>
+        <a href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">
+            <button class="btn btn-success">Add To Basket</button>
+        </a>
     </div>
-    <p class="mt-4">Specification: </p>
     <hr>
-    <a href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">
-        <button class="btn btn-success"> Add To Busket</button>
-    </a>
+    <p class="mt-4">Spec Info:</p>
+    <hr>
 
-    {{ product | product_spec }}
+    {{ product|product_spec }}
 
 </div>
 

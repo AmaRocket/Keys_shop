@@ -50,6 +50,7 @@
         <td> Total:</td>
         <td> {{ cart.total_products }}</td>
         <td><strong> {{ cart.final_price }} $ </strong></td>
+        <td><a href="{% url 'checkout' %}"><button class="btn btn-primary">Go To Order</button></a></td>
     </tr>
     </tbody>
 </table>

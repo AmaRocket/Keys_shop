@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -104,8 +105,6 @@ class Product(models.Model):
         return self.__class__.__name__.lower()
 
 
-
-
 # ---------------------------PRODUCT-CATEGORIES---------------------------------------------------------------------------------
 
 class BackUpStorage(Product):
@@ -123,8 +122,6 @@ class BackUpStorage(Product):
         return get_product_url(self, 'product_detail')
 
 
-
-
 class Design(Product):
     description = models.TextField(verbose_name='Desciption Of Product ',
                                    null=True)  # description of product
@@ -136,7 +133,6 @@ class Design(Product):
 
     def get_absolute_url(self):
         return get_product_url(self, 'product_detail')
-
 
 
 # -----------------------END_OF_CATEGORIES------------------------------------------------------------------------------
@@ -177,26 +173,66 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def save(self, *args, **kwargs):  # calculate balance of products in basket
-        cart_data = self.products.aggregate(models.Sum('final_price'), models.Count('id'))
-        print(cart_data)
-
-        if cart_data.get('final_price__sum'):
-            self.final_price = cart_data['final_price__sum']
-        else:
-            self.final_price = 0
-            self.total_products = cart_data['id__count']
-
-        print(cart_data)
-        super().save(*args, **kwargs)
-
 
 # --------------------------END_OF_BASKET_SETTINGS----------------------------------------------------------------------
+
+
+# --------------------------CUSTOMER_AND_ORDERS----------------------------------------------------------------------
 
 class Customer(models.Model):
     user = models.OneToOneField(User, verbose_name='User', on_delete=models.CASCADE)  # relations customer-user
     phone = models.CharField(max_length=13, verbose_name='Phone Number', null=True, blank=True)  # phone number
     address = models.CharField(max_length=255, verbose_name='Address', null=True, blank=True)  # address
+    orders = models.ManyToManyField('Order', verbose_name='Customer Orders',
+                                    related_name='related_order')  # hystory of customer orders
 
     def __str__(self):
         return "Customer: {} {}".format(self.user.first_name, self.user.last_name)
+
+
+class Order(models.Model):
+    STATUS_NEW = 'new'
+    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_READY = 'is_ready'
+    STATUS_COMPLETED = 'completed'
+
+    # BUYING_TYPE_SELF = 'self'
+    # BUYING_TYPE_DELIVERY = 'delivery'
+
+    STATUS_CHOICES = (
+        (STATUS_NEW, 'NEW'),
+        (STATUS_IN_PROGRESS, 'IN PROGRESS'),
+        (STATUS_READY, 'READY'),
+        (STATUS_COMPLETED, 'COMPLETED')
+    )
+
+    # BUYING_TYPE_CHOICES = (
+    #     (BUYING_TYPE_SELF, 'Pick Up'),
+    #     (BUYING_TYPE_DELIVERY, 'Delivery')
+    # )
+
+    customer = models.ForeignKey(Customer, verbose_name='Customer', related_name='related_orders',
+                                 on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255, verbose_name='Name')
+    last_name = models.CharField(max_length=255, verbose_name='Last Name')
+    phone = models.CharField(max_length=20, verbose_name='Telephone')
+    cart = models.ForeignKey(Cart, verbose_name='Basket', on_delete=models.CASCADE, null=True, blank=True)
+    address = models.CharField(max_length=1024, verbose_name='Address', null=True, blank=True)
+    status = models.CharField(
+        max_length=100,
+        verbose_name='Order Status',
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW
+    )
+    # buying_type = models.CharField(
+    #     max_length=100,
+    #     verbose_name='Order Type',
+    #     choices=BUYING_TYPE_CHOICES,
+    #     default=BUYING_TYPE_SELF
+    # )
+    comment = models.TextField(verbose_name='Order Comment', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Date Order Creating ')
+    order_date = models.DateField(verbose_name='Date Order Receipt', default=timezone.now)
+
+    def __str__(self):
+        return str(self.id)

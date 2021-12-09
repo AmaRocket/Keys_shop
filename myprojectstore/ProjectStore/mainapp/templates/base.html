@@ -58,35 +58,33 @@
 </nav>
 
 <!-- Page Content -->
-<div class="container">
+ <div class="container">
 
     <div class="row">
 
-
-        <div class="col-lg-3">
-
-            <h1 class="my-4"> Category:</h1>
-            <div class="List-group">
-                {% for category in categories %}
-                <a href="{{ category.url }}" class="List-group-item">{{ category.name }} ({{ category.count }})</a>
-                {% endfor %}
-            </div>
-
+      <div class="col-lg-3 mt-5">
+        <div class="list-group">
+          {% for category in categories %}
+          <a href="{{ category.url }}" class="list-group-item">{{ category.name }} ({{ category.count }})</a>
+          {% endfor %}
         </div>
-        <!-- /.col-lg-3 -->
 
+      </div>
+        <!-- /.col-lg-3 -->
         <div class="col-lg-9">
+
             {% block content %}
             {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                <strong>{{ message }}</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% endfor %}
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
             {% endif %}
+
             <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -126,6 +124,9 @@
                                 <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
                             </h4>
                             <h5>{{ product.price }} $ </h5>
+                            <a href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}">
+                                <button class="btn btn-success">Add To Basket</button>
+                            </a>
                         </div>
                     </div>
                 </div>
