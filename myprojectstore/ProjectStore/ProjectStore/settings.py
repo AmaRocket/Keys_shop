@@ -17,7 +17,6 @@ from django.conf.global_settings import STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = 'django-insecure-)b2qt^fy4rdrd-9@&#h#3)wvp(ub0-z7k5gm!&m4w6cye1+h@m
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -77,7 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ProjectStore.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -91,7 +88,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -111,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -124,7 +119,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -139,6 +133,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # for new dir media
 STATICFIELS_DIRS = (
     os.path.join(BASE_DIR, 'static_dev'),
 )
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

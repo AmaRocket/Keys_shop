@@ -3,14 +3,14 @@
 {% block content %}
 <h3 class="text-center mt-5 mb-5 "> Your Basket {% if not cart.products.count %} Is Empty {% endif %}</h3>
 {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    {% endfor %}
+{% for message in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ message }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
 {% endif %}
 {% if cart.products.count %}
 <table class="table">
@@ -31,7 +31,8 @@
         <td class="w-25"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
         <td>{{ item.content_object.price }} $.</td>
         <td>
-            <form action="{% url 'change_qty' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}" method="POST">
+            <form action="{% url 'change_qty' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}"
+                  method="POST">
                 {% csrf_token %}
                 <input type="number" class="form-control" name="qty" style="width 70px;" min="1" value="{{ item.qty }}">
                 <br>
@@ -50,7 +51,9 @@
         <td> Total:</td>
         <td> {{ cart.total_products }}</td>
         <td><strong> {{ cart.final_price }} $ </strong></td>
-        <td><a href="{% url 'checkout' %}"><button class="btn btn-primary">Go To Order</button></a></td>
+        <td><a href="{% url 'checkout' %}">
+            <button class="btn btn-primary">Go To Order</button>
+        </a></td>
     </tr>
     </tbody>
 </table>

@@ -10,6 +10,7 @@ from .mixins import CategoryDetailMixin, CartMixin
 from .forms import OrderForm
 from .utils import recalc_cart
 
+
 class BaseView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
@@ -161,4 +162,3 @@ class MakeOrderView(CartMixin, View):
             messages.add_message(request, messages.INFO, 'Thnx For Order! We Call U')
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
-

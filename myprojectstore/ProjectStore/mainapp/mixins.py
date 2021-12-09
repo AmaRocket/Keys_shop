@@ -14,7 +14,8 @@ class CategoryDetailMixin(SingleObjectMixin):  # SingleObjectMixin - father of a
     # show categories on the side bar
     def get_context_data(self, **kwargs):
         if isinstance(self.get_object(), Category):
-            model = self.CATEGORY_SLUG2PRODUCT_MODEL[self.get_object().slug]  # call instance of category and refer to slug
+            model = self.CATEGORY_SLUG2PRODUCT_MODEL[
+                self.get_object().slug]  # call instance of category and refer to slug
             context = super().get_context_data(**kwargs)
             context['categories'] = Category.objects.get_categoties_for_sidebar()
             context['category_products'] = model.objects.all()
@@ -42,4 +43,3 @@ class CartMixin(View):
                 cart = Cart.objects.create(for_anonymous_user=True)
         self.cart = cart
         return super().dispatch(request, *args, **kwargs)
-

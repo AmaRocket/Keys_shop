@@ -18,17 +18,6 @@ def get_product_url(obj, viewname):
     return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
 
 
-# ----------------CUSTOM_EXCEPTIONS_FOR_RAISE---------------------------------------------------------------------------
-# class MinResolutionErrorExceptions(Exception):
-#     pass
-#
-#
-# class MaxResolutionErrorExceptions(Exception):
-#     pass
-#
-
-# -----------------END--------------------------------------------------------------------------------------------------
-
 # realization different models in one
 
 class LatestProductsManager:
